@@ -1,0 +1,3 @@
+/Users/vuhoanganh/Desktop/thực tập/BMPtoYUV/CMakeFiles/BMPtoYUV.dir
+/Users/vuhoanganh/Desktop/thực tập/BMPtoYUV/CMakeFiles/edit_cache.dir
+/Users/vuhoanganh/Desktop/thực tập/BMPtoYUV/CMakeFiles/rebuild_cache.dir
