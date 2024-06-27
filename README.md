@@ -26,6 +26,11 @@ iamge.bmp
 
 output.yuv
 
+***EXAMPLE***
+
+exampleOutput.doc
+
+
 
 
 
