@@ -22,7 +22,9 @@ video.yuv
 
 iamge.bmp
 
-![Uploading image.png…]()
+***Output***
+
+output.yuv
 
 
 
