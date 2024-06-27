@@ -1,7 +1,7 @@
 #include <iostream>
 #include "bmp.h"
 #include "yuv.h"
-
+#include <thread>
 void printBMPInfo(const BMP& bmp) {
     std::cout << "BMP File Info:" << std::endl;
     std::cout << "File Size: " << bmp.header.file_size << " bytes" << std::endl;
@@ -60,8 +60,14 @@ int main(int argc, char** argv) {
     //Creates a bmpYUV vector to store the YUV data of the BMP with the appropriate size.
     std::vector<uint8_t> bmpYUV(bmp.infoHeader.width * bmp.infoHeader.height * 3 / 2);
 
+    int numThreads = std::thread::hardware_concurrency();
+    // Convert BMP to YUV420 in multithreaded mode
+    RGBtoYUV420MultiThread(bmp, bmpYUV, numThreads);
+
+   
+
     //Converts the BMP data from RGB to YUV420 and stores it in bmpYUV using the RGBtoYUV420 function.
-    RGBtoYUV420(bmp, bmpYUV);
+    //RGBtoYUV420(bmp, bmpYUV);
 
     //Calculates the number of frames in the input YUV file.
     size_t numFrames = yuvData.size() / frameSize;

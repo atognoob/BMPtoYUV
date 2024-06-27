@@ -14,3 +14,6 @@ void RGBtoYUV420(const BMP& bmp, std::vector<uint8_t>& yuv);
 
 //Declare the overlayBMPonYUV function to overlay BMP data onto the YUV frame at the position determined by posX and posY
 void overlayBMPonYUV(uint8_t* yuvFrame, const std::vector<uint8_t>& bmpYUV, int videoWidth, int videoHeight, int bmpWidth, int bmpHeight, int posX, int posY);
+
+//Bonus 1
+void RGBtoYUV420MultiThread(const BMP& bmp, std::vector<uint8_t>& yuv, int numThreads);

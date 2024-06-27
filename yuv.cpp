@@ -1,6 +1,8 @@
 #include "yuv.h"
 #include <fstream>
 #include <stdexcept>
+#include <thread>
+#include <vector>
 
 std::vector<uint8_t> readYUVFile(const std::string& filename) {
     //Open the file in binary mode and read from the end of the file
@@ -96,6 +98,50 @@ void overlayBMPonYUV(uint8_t* yuvFrame, const std::vector<uint8_t>& bmpYUV, int 
                 yuvFrame[vFrameIndex] = bmpYUV[bmpVIndex];
             }
         }
+    }
+}
+
+/////////// Bonus /////
+void convertRGBtoYUVSection(const BMP& bmp, std::vector<uint8_t>& yuv, int startRow, int endRow) {
+    int width = bmp.infoHeader.width;
+    int height = bmp.infoHeader.height;
+    int yIndex = startRow * width;
+    int uIndex = width * height + (startRow / 2) * (width / 2);
+    int vIndex = uIndex + (width * height) / 4;
+
+    for (int j = startRow; j < endRow; j++) { // Đọc từ dưới lên trên
+        for (int i = 0; i < width; i++) {
+            int r = bmp.data[(j * width + i) * 3 + 2];
+            int g = bmp.data[(j * width + i) * 3 + 1];
+            int b = bmp.data[(j * width + i) * 3];
+
+            int y = (0.299 * r + 0.587 * g + 0.114 * b);
+            int u = (-0.147 * r - 0.289 * g + 0.436 * b) + 128;
+            int v = (0.615 * r - 0.515 * g - 0.100 * b) + 128;
+
+            yuv[yIndex++] = y;
+
+            if (j % 2 == 0 && i % 2 == 0) {
+                yuv[uIndex++] = u;
+                yuv[vIndex++] = v;
+            }
+        }
+    }
+}
+
+void RGBtoYUV420MultiThread(const BMP& bmp, std::vector<uint8_t>& yuv, int numThreads) {
+    int height = bmp.infoHeader.height;
+    std::vector<std::thread> threads;
+    int rowsPerThread = height / numThreads;
+
+    for (int i = 0; i < numThreads; ++i) {
+        int startRow = i * rowsPerThread;
+        int endRow = (i == numThreads - 1) ? height : startRow + rowsPerThread;
+        threads.emplace_back(convertRGBtoYUVSection, std::ref(bmp), std::ref(yuv), startRow, endRow);
+    }
+
+    for (auto& thread : threads) {
+        thread.join();
     }
 }
 
